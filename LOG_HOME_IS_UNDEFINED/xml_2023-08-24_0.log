@@ -1,0 +1,191 @@
+2023-08-24 15:56:23.826 [] [main] INFO  com.example.seckilldemo.SeckillDemoApplication - Starting SeckillDemoApplication using Java 1.8.0_221 on DESKTOP-IOSI537 with PID 78844 (D:\comptitionreal\seckillDemo\target\classes started by admin in D:\comptitionreal\seckillDemo)
+2023-08-24 15:56:23.826 [] [background-preinit] INFO  org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 6.2.5.Final
+2023-08-24 15:56:23.829 [] [main] INFO  com.example.seckilldemo.SeckillDemoApplication - The following 1 profile is active: "dev"
+2023-08-24 15:56:25.113 [] [main] INFO  o.s.d.r.config.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2023-08-24 15:56:25.118 [] [main] INFO  o.s.d.r.config.RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2023-08-24 15:56:25.149 [] [main] INFO  o.s.d.r.config.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 11 ms. Found 0 Redis repository interfaces.
+2023-08-24 15:56:26.054 [] [main] INFO  o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8082 (http)
+2023-08-24 15:56:26.065 [] [main] INFO  org.apache.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8082"]
+2023-08-24 15:56:26.065 [] [main] INFO  org.apache.catalina.core.StandardService - Starting service [Tomcat]
+2023-08-24 15:56:26.066 [] [main] INFO  org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.70]
+2023-08-24 15:56:26.275 [] [main] INFO  o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2023-08-24 15:56:26.275 [] [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 2388 ms
+2023-08-24 15:56:26.594 [] [main] INFO  com.example.seckilldemo.config.ThreadConfig - dms配置：ThreadConfig(threadCorePoolSize=100, threadMaxPoolSize=200, threadQueueCapacity=99999)
+2023-08-24 15:56:26.869 [] [main] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - Init DruidDataSource
+2023-08-24 15:56:27.607 [] [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
+2023-08-24 15:56:36.892 [] [main] INFO  org.apache.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8082"]
+2023-08-24 15:56:36.926 [] [main] INFO  o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port(s): 8082 (http) with context path ''
+2023-08-24 15:56:36.987 [] [main] INFO  com.example.seckilldemo.SeckillDemoApplication - Started SeckillDemoApplication in 13.67 seconds (JVM running for 15.033)
+2023-08-24 15:56:39.612 [] [springSessionRedisMessageListenerContainer-1] WARN  redis.clients.jedis.JedisFactory - Error while close
+redis.clients.jedis.exceptions.JedisConnectionException: java.net.SocketException: Connection reset by peer: socket write error
+	at redis.clients.jedis.Connection.disconnect(Connection.java:256)
+	at redis.clients.jedis.BinaryClient.disconnect(BinaryClient.java:162)
+	at redis.clients.jedis.Connection.close(Connection.java:246)
+	at redis.clients.jedis.BinaryClient.close(BinaryClient.java:168)
+	at redis.clients.jedis.BinaryJedis.close(BinaryJedis.java:340)
+	at redis.clients.jedis.Jedis.close(Jedis.java:4084)
+	at redis.clients.jedis.JedisFactory.destroyObject(JedisFactory.java:166)
+	at org.apache.commons.pool2.PooledObjectFactory.destroyObject(PooledObjectFactory.java:127)
+	at org.apache.commons.pool2.impl.GenericObjectPool.destroy(GenericObjectPool.java:611)
+	at org.apache.commons.pool2.impl.GenericObjectPool.invalidateObject(GenericObjectPool.java:941)
+	at org.apache.commons.pool2.impl.GenericObjectPool.invalidateObject(GenericObjectPool.java:914)
+	at redis.clients.jedis.util.Pool.returnBrokenResourceObject(Pool.java:124)
+	at redis.clients.jedis.util.Pool.returnBrokenResource(Pool.java:103)
+	at redis.clients.jedis.Jedis.close(Jedis.java:4079)
+	at org.springframework.data.redis.connection.jedis.JedisConnection.close(JedisConnection.java:352)
+	at org.springframework.data.redis.listener.RedisMessageListenerContainer$Subscriber.closeConnection(RedisMessageListenerContainer.java:1323)
+	at org.springframework.data.redis.listener.RedisMessageListenerContainer.handleSubscriptionException(RedisMessageListenerContainer.java:893)
+	at org.springframework.data.redis.listener.RedisMessageListenerContainer$BlockingSubscriber.lambda$eventuallyPerformSubscription$2(RedisMessageListenerContainer.java:1437)
+	at java.lang.Thread.run(Thread.java:748)
+Caused by: java.net.SocketException: Connection reset by peer: socket write error
+	at java.net.SocketOutputStream.socketWrite0(Native Method)
+	at java.net.SocketOutputStream.socketWrite(SocketOutputStream.java:111)
+	at java.net.SocketOutputStream.write(SocketOutputStream.java:155)
+	at redis.clients.jedis.util.RedisOutputStream.flushBuffer(RedisOutputStream.java:52)
+	at redis.clients.jedis.util.RedisOutputStream.flush(RedisOutputStream.java:133)
+	at redis.clients.jedis.Connection.disconnect(Connection.java:252)
+	... 18 common frames omitted
+2023-08-24 15:56:39.616 [] [springSessionRedisMessageListenerContainer-1] ERROR o.s.d.redis.listener.RedisMessageListenerContainer - Connection failure occurred: org.springframework.data.redis.RedisConnectionFailureException: java.net.SocketException: Connection reset; nested exception is redis.clients.jedis.exceptions.JedisConnectionException: java.net.SocketException: Connection reset. Restarting subscription task after 5000 ms.
+org.springframework.data.redis.RedisConnectionFailureException: java.net.SocketException: Connection reset; nested exception is redis.clients.jedis.exceptions.JedisConnectionException: java.net.SocketException: Connection reset
+	at org.springframework.data.redis.connection.jedis.JedisExceptionConverter.convert(JedisExceptionConverter.java:65)
+	at org.springframework.data.redis.connection.jedis.JedisExceptionConverter.convert(JedisExceptionConverter.java:42)
+	at org.springframework.data.redis.PassThroughExceptionTranslationStrategy.translate(PassThroughExceptionTranslationStrategy.java:44)
+	at org.springframework.data.redis.FallbackExceptionTranslationStrategy.translate(FallbackExceptionTranslationStrategy.java:42)
+	at org.springframework.data.redis.connection.jedis.JedisConnection.convertJedisAccessException(JedisConnection.java:192)
+	at org.springframework.data.redis.connection.jedis.JedisConnection.doWithJedis(JedisConnection.java:836)
+	at org.springframework.data.redis.connection.jedis.JedisConnection.pSubscribe(JedisConnection.java:741)
+	at org.springframework.data.redis.listener.RedisMessageListenerContainer$Subscriber.doSubscribe(RedisMessageListenerContainer.java:1231)
+	at org.springframework.data.redis.listener.RedisMessageListenerContainer$BlockingSubscriber.lambda$eventuallyPerformSubscription$2(RedisMessageListenerContainer.java:1433)
+	at java.lang.Thread.run(Thread.java:748)
+Caused by: redis.clients.jedis.exceptions.JedisConnectionException: java.net.SocketException: Connection reset
+	at redis.clients.jedis.util.RedisInputStream.ensureFill(RedisInputStream.java:205)
+	at redis.clients.jedis.util.RedisInputStream.readByte(RedisInputStream.java:43)
+	at redis.clients.jedis.Protocol.process(Protocol.java:165)
+	at redis.clients.jedis.Protocol.read(Protocol.java:230)
+	at redis.clients.jedis.Connection.readProtocolWithCheckingBroken(Connection.java:352)
+	at redis.clients.jedis.Connection.getUnflushedObjectMultiBulkReply(Connection.java:314)
+	at redis.clients.jedis.BinaryJedisPubSub.process(BinaryJedisPubSub.java:101)
+	at redis.clients.jedis.BinaryJedisPubSub.proceedWithPatterns(BinaryJedisPubSub.java:89)
+	at redis.clients.jedis.BinaryJedis.psubscribe(BinaryJedis.java:3900)
+	at org.springframework.data.redis.connection.jedis.JedisConnection.lambda$pSubscribe$7(JedisConnection.java:746)
+	at org.springframework.data.redis.connection.jedis.JedisConnection.doWithJedis(JedisConnection.java:834)
+	... 4 common frames omitted
+Caused by: java.net.SocketException: Connection reset
+	at java.net.SocketInputStream.read(SocketInputStream.java:210)
+	at java.net.SocketInputStream.read(SocketInputStream.java:141)
+	at java.net.SocketInputStream.read(SocketInputStream.java:127)
+	at redis.clients.jedis.util.RedisInputStream.ensureFill(RedisInputStream.java:199)
+	... 14 common frames omitted
+2023-08-24 15:56:44.360 [] [SpringApplicationShutdownHook] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
+2023-08-24 15:56:44.370 [] [SpringApplicationShutdownHook] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
+2023-08-24 15:56:49.760 [] [main] INFO  com.example.seckilldemo.SeckillDemoApplication - Starting SeckillDemoApplication using Java 1.8.0_221 on DESKTOP-IOSI537 with PID 59476 (D:\comptitionreal\seckillDemo\target\classes started by admin in D:\comptitionreal\seckillDemo)
+2023-08-24 15:56:49.760 [] [background-preinit] INFO  org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 6.2.5.Final
+2023-08-24 15:56:49.763 [] [main] INFO  com.example.seckilldemo.SeckillDemoApplication - The following 1 profile is active: "dev"
+2023-08-24 15:56:50.640 [] [main] INFO  o.s.d.r.config.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2023-08-24 15:56:50.644 [] [main] INFO  o.s.d.r.config.RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2023-08-24 15:56:50.685 [] [main] INFO  o.s.d.r.config.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 14 ms. Found 0 Redis repository interfaces.
+2023-08-24 15:56:51.401 [] [main] INFO  o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8082 (http)
+2023-08-24 15:56:51.411 [] [main] INFO  org.apache.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8082"]
+2023-08-24 15:56:51.411 [] [main] INFO  org.apache.catalina.core.StandardService - Starting service [Tomcat]
+2023-08-24 15:56:51.412 [] [main] INFO  org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.70]
+2023-08-24 15:56:51.649 [] [main] INFO  o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2023-08-24 15:56:51.650 [] [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1834 ms
+2023-08-24 15:56:51.888 [] [main] INFO  com.example.seckilldemo.config.ThreadConfig - dms配置：ThreadConfig(threadCorePoolSize=100, threadMaxPoolSize=200, threadQueueCapacity=99999)
+2023-08-24 15:56:52.017 [] [main] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - Init DruidDataSource
+2023-08-24 15:56:52.315 [] [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
+2023-08-24 15:57:06.255 [] [main] WARN  o.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'testController': Invocation of init method failed; nested exception is org.springframework.data.redis.RedisConnectionFailureException: Cannot get Jedis connection; nested exception is redis.clients.jedis.exceptions.JedisConnectionException: Could not get a resource from the pool
+2023-08-24 15:57:06.256 [] [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
+2023-08-24 15:57:06.263 [] [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
+2023-08-24 15:57:06.267 [] [main] INFO  org.apache.catalina.core.StandardService - Stopping service [Tomcat]
+2023-08-24 15:57:06.281 [] [main] INFO  o.s.b.a.l.ConditionEvaluationReportLoggingListener - 
+
+Error starting ApplicationContext. To display the conditions report re-run your application with 'debug' enabled.
+2023-08-24 15:57:06.341 [] [main] ERROR org.springframework.boot.SpringApplication - Application run failed
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'testController': Invocation of init method failed; nested exception is org.springframework.data.redis.RedisConnectionFailureException: Cannot get Jedis connection; nested exception is redis.clients.jedis.exceptions.JedisConnectionException: Could not get a resource from the pool
+	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor.postProcessBeforeInitialization(InitDestroyAnnotationBeanPostProcessor.java:160)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.applyBeanPostProcessorsBeforeInitialization(AbstractAutowireCapableBeanFactory.java:440)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1796)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:620)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:542)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:335)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:333)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:208)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:955)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:918)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:583)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:147)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:731)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:408)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:307)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1303)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1292)
+	at com.example.seckilldemo.SeckillDemoApplication.main(SeckillDemoApplication.java:15)
+Caused by: org.springframework.data.redis.RedisConnectionFailureException: Cannot get Jedis connection; nested exception is redis.clients.jedis.exceptions.JedisConnectionException: Could not get a resource from the pool
+	at org.springframework.data.redis.connection.jedis.JedisConnectionFactory.fetchJedisConnector(JedisConnectionFactory.java:292)
+	at org.springframework.data.redis.connection.jedis.JedisConnectionFactory.getConnection(JedisConnectionFactory.java:515)
+	at org.springframework.data.redis.core.RedisConnectionUtils.fetchConnection(RedisConnectionUtils.java:193)
+	at org.springframework.data.redis.core.RedisConnectionUtils.doGetConnection(RedisConnectionUtils.java:144)
+	at org.springframework.data.redis.core.RedisConnectionUtils.getConnection(RedisConnectionUtils.java:105)
+	at org.springframework.data.redis.core.RedisTemplate.execute(RedisTemplate.java:211)
+	at org.springframework.data.redis.core.RedisTemplate.execute(RedisTemplate.java:191)
+	at org.springframework.data.redis.core.AbstractOperations.execute(AbstractOperations.java:97)
+	at org.springframework.data.redis.core.DefaultValueOperations.decrement(DefaultValueOperations.java:189)
+	at com.example.seckilldemo.controller.TestController.init(TestController.java:27)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor$LifecycleElement.invoke(InitDestroyAnnotationBeanPostProcessor.java:389)
+	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor$LifecycleMetadata.invokeInitMethods(InitDestroyAnnotationBeanPostProcessor.java:333)
+	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor.postProcessBeforeInitialization(InitDestroyAnnotationBeanPostProcessor.java:157)
+	... 18 common frames omitted
+Caused by: redis.clients.jedis.exceptions.JedisConnectionException: Could not get a resource from the pool
+	at redis.clients.jedis.util.Pool.getResource(Pool.java:84)
+	at redis.clients.jedis.JedisPool.getResource(JedisPool.java:377)
+	at redis.clients.jedis.JedisPool.getResource(JedisPool.java:15)
+	at org.springframework.data.redis.connection.jedis.JedisConnectionFactory.fetchJedisConnector(JedisConnectionFactory.java:283)
+	... 34 common frames omitted
+Caused by: redis.clients.jedis.exceptions.JedisConnectionException: Failed to create socket.
+	at redis.clients.jedis.DefaultJedisSocketFactory.createSocket(DefaultJedisSocketFactory.java:110)
+	at redis.clients.jedis.Connection.connect(Connection.java:226)
+	at redis.clients.jedis.BinaryClient.connect(BinaryClient.java:144)
+	at redis.clients.jedis.BinaryJedis.connect(BinaryJedis.java:314)
+	at redis.clients.jedis.BinaryJedis.initializeFromClientConfig(BinaryJedis.java:92)
+	at redis.clients.jedis.BinaryJedis.<init>(BinaryJedis.java:297)
+	at redis.clients.jedis.Jedis.<init>(Jedis.java:169)
+	at redis.clients.jedis.JedisFactory.makeObject(JedisFactory.java:177)
+	at org.apache.commons.pool2.impl.GenericObjectPool.create(GenericObjectPool.java:571)
+	at org.apache.commons.pool2.impl.GenericObjectPool.borrowObject(GenericObjectPool.java:298)
+	at org.apache.commons.pool2.impl.GenericObjectPool.borrowObject(GenericObjectPool.java:223)
+	at redis.clients.jedis.util.Pool.getResource(Pool.java:75)
+	... 37 common frames omitted
+Caused by: java.net.SocketTimeoutException: connect timed out
+	at java.net.DualStackPlainSocketImpl.waitForConnect(Native Method)
+	at java.net.DualStackPlainSocketImpl.socketConnect(DualStackPlainSocketImpl.java:85)
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:350)
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:206)
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:188)
+	at java.net.PlainSocketImpl.connect(PlainSocketImpl.java:172)
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
+	at java.net.Socket.connect(Socket.java:589)
+	at redis.clients.jedis.DefaultJedisSocketFactory.createSocket(DefaultJedisSocketFactory.java:80)
+	... 48 common frames omitted
+2023-08-24 15:57:20.012 [] [background-preinit] INFO  org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 6.2.5.Final
+2023-08-24 15:57:20.011 [] [main] INFO  com.example.seckilldemo.SeckillDemoApplication - Starting SeckillDemoApplication using Java 1.8.0_221 on DESKTOP-IOSI537 with PID 79960 (D:\comptitionreal\seckillDemo\target\classes started by admin in D:\comptitionreal\seckillDemo)
+2023-08-24 15:57:20.014 [] [main] INFO  com.example.seckilldemo.SeckillDemoApplication - The following 1 profile is active: "dev"
+2023-08-24 15:57:20.853 [] [main] INFO  o.s.d.r.config.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2023-08-24 15:57:20.856 [] [main] INFO  o.s.d.r.config.RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2023-08-24 15:57:20.883 [] [main] INFO  o.s.d.r.config.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 10 ms. Found 0 Redis repository interfaces.
+2023-08-24 15:57:21.652 [] [main] INFO  o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8082 (http)
+2023-08-24 15:57:21.662 [] [main] INFO  org.apache.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8082"]
+2023-08-24 15:57:21.663 [] [main] INFO  org.apache.catalina.core.StandardService - Starting service [Tomcat]
+2023-08-24 15:57:21.663 [] [main] INFO  org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.70]
+2023-08-24 15:57:21.855 [] [main] INFO  o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2023-08-24 15:57:21.855 [] [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1788 ms
+2023-08-24 15:57:22.112 [] [main] INFO  com.example.seckilldemo.config.ThreadConfig - dms配置：ThreadConfig(threadCorePoolSize=100, threadMaxPoolSize=200, threadQueueCapacity=99999)
+2023-08-24 15:57:22.243 [] [main] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - Init DruidDataSource
+2023-08-24 15:57:22.572 [] [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
+2023-08-24 15:57:27.129 [] [main] INFO  org.apache.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8082"]
+2023-08-24 15:57:27.150 [] [main] INFO  o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port(s): 8082 (http) with context path ''
+2023-08-24 15:57:27.178 [] [main] INFO  com.example.seckilldemo.SeckillDemoApplication - Started SeckillDemoApplication in 7.594 seconds (JVM running for 8.735)

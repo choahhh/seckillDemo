@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>主页</title>
+    <!-- jquery -->
+    <script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
+    <!-- bootstrap -->
+    <link rel="stylesheet" type="text/css" th:href="@{/bootstrap/css/bootstrap.min.css}"/>
+    <script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+    <!-- jquery-validator -->
+    <script type="text/javascript" th:src="@{/jquery-validation/jquery.validate.min.js}"></script>
+    <script type="text/javascript" th:src="@{/jquery-validation/localization/messages_zh.min.js}"></script>
+    <!-- layer -->
+    <script type="text/javascript" th:src="@{/layer/layer.js}"></script>
+    <!-- md5.js -->
+    <script type="text/javascript" th:src="@{/js/md5.min.js}"></script>
+    <!-- common.js -->
+    <script type="text/javascript" th:src="@{/js/common.js}"></script>
+</head>
+<body>
+<div class="form-group">
+    <div class="row">
+
+        <label class="form-label col-md-4"></label>
+        <div class="col-md-3">
+            <h2 style="text-align:center; margin-bottom: 20px">主页</h2>
+        </div>
+        <div class="col-md-3">
+        </div>
+    </div>
+</div>
+<div name="loginForm" id="loginForm" style="width:50%; margin:0 auto">
+    <div class="form-group">
+        <div class="row">
+
+            <label class="form-label col-md-3"></label>
+            <div class="col-md-4">
+                <button class="btn btn-primary btn-block" style=" text-align:center " onclick="exit()">退出登录</button>
+            </div>
+            <div class="col-md-3">
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+<script>
+
+    function exit() {
+
+        $.ajax({
+                url: "/loginout",
+                type: "POST",
+                success: function (json) {
+                    window.location.href = "/";
+                },
+
+            }
+        )
+    }
+</script>
+</html>

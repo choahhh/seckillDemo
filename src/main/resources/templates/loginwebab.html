@@ -1,0 +1,203 @@
+<html xmlns:layout="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml"
+      layout:decorate="~{${layout}}">
+<div layout:fragment="head">
+    <title>鹰潭跨境电商综合服务平台</title>
+</div>
+<div layout:fragment="body">
+    <input type="hidden" class="navindex" value="1" />
+
+    <div class="banner">
+                <ul class="loginb mt50">
+                    <li><span class="youx"></span><input class="phone"  type="text" placeholder="请输入用户名/手机号"></li>
+                    <li><span class="mima"></span><input class="password" type="password" placeholder="请输入密码"></li>
+                </ul>
+                <span class="loginbut hoverr">登录</span>
+                <p class="loginerror"></p>
+                <p>
+                    <a class="loginc" th:href="|${ctx}/view/accounts/forgetpassword|">忘记密码?</a>
+                    <!--                    <span class="logind">使用IC卡登录</span>-->
+                </p>
+            </div>
+            <div class="cardlogin">
+                <span class="fhzhdr">返回登录</span>
+                <iframe id="cdiframe" scrolling="no" frameborder="0" src ="" > </iframe>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="parta mr35">
+            <div class="indextit">
+                <p>新闻动态</p>
+                <span class="indexb"></span>
+                <a class="ititm" th:href="|${ctx}/view/news|">更多></a>
+            </div>
+            <div class="nrat zsqdt_top"></div>
+            <ul class="indexlist zsqdt"></ul>
+        </div>
+        <div class="parta">
+            <div class="indextit">
+                <p class="pagetab"><span>政策公告</span></p>
+                <span class="indexb"></span>
+                <a class="ititm" th:href="|${ctx}/view/news2|">更多></a>
+            </div>
+            <ul class="indexlist pagetabdiv zcgg"></ul>
+            <ul class="indexlist pagetabdiv hydt"></ul>
+        </div>
+        <div class="clr"></div>
+        <!--        <div>-->
+        <!--            <div class="indextit">-->
+        <!--                <p>产业园区</p>-->
+        <!--                <span class="indexb"></span>-->
+        <!--                <a class="ititm" href="${ctx}/park">更多></a>-->
+        <!--            </div>-->
+        <!--            <div class="cyyqhtml"></div>-->
+        <!--            <div class="clr"></div>-->
+        <!--        </div>-->
+
+
+        <!--<div>
+            <div class="indextit">
+                <p>查询中心</p>
+                <span class="indexb"></span>
+                <a class="ititm" href="#">更多></a>
+            </div>
+            <div>
+                <div class="cxzx">
+                    <a href="http://www.gsxt.gov.cn/index.html" class="cxzxitem">
+                        <img th:src="|${ctx}/images/icon(1).png|">
+                        <p>供应商/生产企业信用查询</p>
+                    </a>
+                </div>
+                <div class="cxzx">
+                    <a href="https://www.qcc.com/" class="cxzxitem">
+                        <img th:src="|${ctx}/images/icon(2).png|">
+                        <p>货代公司公司信用查询</p>
+                    </a>
+                </div>
+                <div class="cxzx">
+                    <a href="http://credit.customs.gov.cn" class="cxzxitem">
+                        <img th:src="|${ctx}/images/icon(3).png|">
+                        <p>外贸公司/代表处信用查询</p>
+                    </a>
+                </div>
+                <div class="cxzx">
+                    <a href="https://sbj.cnipa.gov.cn/sbj/sbcx/" class="cxzxitem">
+                        <img th:src="|${ctx}/images/icon(4).png|">
+                        <p>知识产权备案信息查询</p>
+                    </a>
+                </div>
+                <div class="cxzx">
+                    <a href="https://www.hsbianma.com" class="cxzxitem">
+                        <img th:src="|${ctx}/images/icon(5).png|">
+                        <p>HS编码查询</p>
+                    </a>
+                </div>
+                <div class="cxzx">
+&lt;!&ndash;                    <a href="http://www.customs.gov.cn/customs/302427/302442/jckszcx/index.html" class="cxzxitem">&ndash;&gt;
+                    <a href="http://hd.chinatax.gov.cn/nszx/InitChukou.html" class="cxzxitem">
+                        <img th:src="|${ctx}/images/icon(6).png|">
+                        <p>进出口税则查询</p>
+                    </a>
+                </div>
+                <div class="cxzx">
+                    <a href="http://query.customs.gov.cn/MNFTQ" class="cxzxitem">
+                        <img th:src="|${ctx}/images/icon(7).png|">
+                        <p>舱单查询</p>
+                    </a>
+                </div>
+                <div class="cxzx">
+                    <a href="http://www.igenzong.com/vessel/vessel" class="cxzxitem">
+                        <img th:src="|${ctx}/images/icon(8).png|">
+                        <p>船期查询</p>
+                    </a>
+                </div>
+                <div class="clr"></div>
+            </div>
+        </div>-->
+    </div>
+</div>
+<script type="text/javascript" th:src="|/js/jquery.min.js|"></script>
+<script type="text/javascript" th:src="|/js/public.js|"></script>
+
+<div layout:fragment="script">
+    <script  type="text/javascript" th:inline="javascript">
+        const baseUrl = [[${ctx}]];
+        (function(){
+            //1=政策公告,0=义乌贸易动态
+            var ajaxurl=$(".ajaxurl").val();
+            //义乌综试区动态 底部4条
+            $.ajax({
+                url:baseUrl+"/api/v1/noauth/cms-dynamic-announcement/findPage",
+                type:"POST",
+                dataType:"json",
+                data:JSON.stringify({"pageNum": 1,"pageSize":5,"state": 1,"articleType":0}),
+                contentType:"application/json",
+                success:function(json){
+                    if(json.state === 'success' && json.data.records.length>0){
+                        zsqdt("zsqdt_top",json.data.records[0]);
+                        jzlist("zsqdt",json.data.records.slice(-4),4,"newsdetail");
+                    }
+                }
+            });
+
+            // 政策公告8条
+            $.ajax({
+                url:baseUrl+"/api/v1/noauth/cms-dynamic-announcement/findPage",
+                type:"POST",
+                dataType:"json",
+                data:JSON.stringify({"pageNum": 1,"pageSize":8,"state": 1,"articleType":1}),
+                contentType:"application/json",
+                success:function(json){
+                    if(json.state == 'success' && json.data.records.length>0){
+                        jzlist("zcgg",json.data.records,8,"newsdetail");
+                    }
+                }
+            });
+
+            // 行业动态8条
+            // $.ajax({
+            //     url:baseUrl+"/news/qt/newsList",
+            //     type:"POST",
+            //     dataType:"json",
+            //     data:JSON.stringify({"page": 1,"rows":8,"start": 1,"type":1}),
+            //     contentType:"application/json",
+            //     success:function(json){
+            //         if(json.data.length>0){
+            //             jzlist("hydt",json.data,8,"newsdetail");
+            //         }
+            //     }
+            // });
+
+            // 产业园区 4个
+            // $.ajax({
+            //     url:baseUrl+"/news/qt/newsList",
+            //     type:"POST",
+            //     dataType:"json",
+            //     data:JSON.stringify({"page": 1,"rows":4,"start": 1,"type":3}),
+            //     contentType:"application/json",
+            //     success:function(json){
+            //         if(json.data.length>0){
+            //             cyyq("cyyqhtml",json.data,4);
+            //         }
+            //     }
+            // });
+
+        })();
+
+        $(".logind").click(function(){
+            var iframe = document.getElementById("cdiframe");
+            $(".banner iframe").attr("src","http://iccard.yweport.com?service=http%3a%2f%2fauthapi.yweport.com%2floginIcCard.do&returnurl=http%3a%2f%2fplatform.yweport.com&logintype=1&token=");
+            $(".cardlogin").show();
+            $(".bannerlogin").hide();
+            iframe.onload = function(){
+                $(".fhzhdr").show();
+            };
+        })
+
+        $(".fhzhdr").click(function(){
+            $(".fhzhdr").hide();
+            $(".cardlogin").hide();
+            $(".bannerlogin").show();
+        })
+    </script>
+</div>

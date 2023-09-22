@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.seckilldemo.dao.GoodsMapper">
+
+
+    <resultMap type="com.example.seckilldemo.entity.po.Goods" id="goods">
+        <id property="id" column="id" />
+        <result property="userId" column="userId" />
+        <result property="goodsId" column="goodsId" />
+        <result property="type" column="type"/>
+        <result property="seckillPrice" column="seckillPrice"/>
+        <result property="stockCount" column="stockCount" />
+        <result property="startDate" column="startDate" />
+        <result property="endDate" column="endDate" />
+        <!-- 一对一级联查询 -->
+        <association property="goodsDetail"
+                     javaType="com.example.seckilldemo.entity.po.GoodsDetail">
+            <id property="id" column="goodsId" />
+            <result property="goodsName" column="goodsName" />
+            <result property="goodsTitle" column="goodsTitle" />
+            <result property="goodsDetail" column="goodsDetail" />
+            <result property="goodsPrice" column="goodsPrice" />
+            <result property="userId" column="userId" />
+        </association>
+    </resultMap>
+
+
+    <update id="addSeckillCount">
+        update t_goods
+        set stockCount=stockCount + ${seckillCount}
+        where id=#{goodsId}
+    </update>
+    <update id="subtractSeckillCount">
+        update t_goods
+        set stockCount=stockCount - ${goodsCount}
+        where id=#{goodsId} and stockCount > ${goodsCount}
+    </update>
+    <select id="selectLockSeckillCount" resultType="java.lang.Integer">
+        select stockCount from t_goods  where id = #{goodsId} for update
+    </select>
+    <select id="selectGoodInfo" resultType="com.example.seckilldemo.entity.po.GoodsDetail">
+        select g.* from t_goods_detail g  left join  t_goods t on g.id = t.goodsId where t.id = #{goodsId}
+    </select>
+
+    <select id="findGoodDetail" resultMap="goods">
+        select d.*,f.id as f_id,goodsName,goodsTitle,goodsDetail,goodsPrice from t_goods d left join t_goods_detail f on d.goodsId = f.id
+        <where>
+            d.id = #{goodsId}
+            <if test="userId != null and userId != ''">
+                and d.userId = #{userId}
+            </if>
+        </where>
+    </select>
+
+
+</mapper>
