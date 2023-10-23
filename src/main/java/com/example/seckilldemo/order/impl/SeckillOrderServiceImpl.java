@@ -7,6 +7,7 @@ import com.example.seckilldemo.entity.enums.OrderStatus;
 import com.example.seckilldemo.entity.enums.OrderType;
 import com.example.seckilldemo.entity.po.Goods;
 import com.example.seckilldemo.entity.po.Order;
+import com.example.seckilldemo.entity.po.SeckillRule;
 import com.example.seckilldemo.order.AbstractOrderTypeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,14 +16,16 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @Slf4j
 @CacheConfig(cacheNames = {"seckill"})
-public class SeckillOrderServiceImpl extends AbstractOrderTypeService {
+public class SeckillOrderServiceImpl extends AbstractOrderTypeService implements Serializable {
 
     @Autowired
     private OrderMapper orderMapper;
@@ -36,12 +39,12 @@ public class SeckillOrderServiceImpl extends AbstractOrderTypeService {
     }
 
     @Override
-    public Boolean isPlace(Goods goods) {
+    public Boolean isPlace(Goods goods, SeckillRule seckillRule) {
         if (goods == null) {
             return false;
         }
-        Date startDate = goods.getStartDate();
-        Date endDate = goods.getEndDate();
+        Date startDate = seckillRule.getStartTime();
+        Date endDate = seckillRule.getEndTime();
         long now = Timestamp.valueOf(LocalDateTime.now()).getTime();
         if (startDate.getTime() > now || endDate.getTime() < now) {
             log.error("该货物已经无法购买！goods=》{}", goods);
@@ -85,6 +88,17 @@ public class SeckillOrderServiceImpl extends AbstractOrderTypeService {
     }
 
 
+    @Override
+    public Boolean selectOrderOnlyLock(Long id, Long userId) {
+        String lockKey = "lock_" + id +"_" +userId;
+        Boolean aBoolean = redisTemplate.opsForValue().setIfAbsent(lockKey, 1, 30, TimeUnit.SECONDS);
+        return aBoolean;
+    }
 
-
+    @Override
+    public Boolean releaseOrderOnlyLock(Long id, Long userId) {
+        String lockKey = "lock_" + id +"_" +userId;
+        redisTemplate.delete(lockKey);
+        return true;
+    }
 }

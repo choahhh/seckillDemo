@@ -19,8 +19,7 @@ public class WebConfig implements WebMvcConfigurer {
 //
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(new FormUserDetailsArgumentResolver());
-        resolvers.add(new UserDetailsArgumentResolver());
+
     }
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {

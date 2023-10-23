@@ -2,25 +2,35 @@ package com.example.seckilldemo.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.seckilldemo.entity.po.Goods;
-import com.example.seckilldemo.entity.po.GoodsDetail;
 import org.springframework.transaction.annotation.Transactional;
 
 public interface GoodsService extends IService<Goods> {
 
+     void saveGoods(Goods goods);
 
 
-     Integer selectSeckillCount(Long goodsId);
+     Goods findGoodsNoCountById(Long goodsId);
+
+     Boolean updateCountByRedis(Long id, int i);
+
+
+     Integer findCountByDb(Long goodsId);
+
+     Integer findCountByRedis(Long goodsId);
+
+//     Integer selectSeckillCount(Long goodsId);
 
      /**
       * 预先判断库存 加锁 redis预先添加库存 然后计算
       * @param goodsId
       * @return
       */
-     boolean advanceCalSeckillCount(Long goodsId,Integer goodsCount);
-
-     @Transactional
-     //数据库加锁 所以方法不需要加锁 保证原子
-     boolean subtractAdvanceCount(Long goodsId,Integer goodsCount);
+//     AjaxResult advanceCalSeckill(GoodsDto goodsDto, Long userId, Integer goodsCount);
+//
+//
+//     @Transactional
+//     //数据库加锁 所以方法不需要加锁 保证原子
+//     boolean subtractAdvanceCount(Long goodsId,Integer goodsCount);
 
 
      @Transactional(rollbackFor = Exception.class)
@@ -29,8 +39,10 @@ public interface GoodsService extends IService<Goods> {
      @Transactional(rollbackFor = Exception.class)
      boolean subtractSeckillCount(Long goodsId,Integer goodsCount);
 
-     GoodsDetail selectGoodInfo(Long goodsId);
+     Goods findById(Long goodsId);
+
+     void updateByid(Goods goods);
 
 
-    Goods findGoodDetail(Long goodsId, Long id);
+    void syncCount(Long goodId);
 }

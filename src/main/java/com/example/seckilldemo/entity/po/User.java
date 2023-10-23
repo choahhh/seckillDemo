@@ -6,9 +6,11 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -32,19 +34,16 @@ public class User extends Model<User> implements Serializable {
     @TableField
     private String userName;
 
-    private String password;
-
-
+//    private String password;
 
     @TableField
-    private LocalDateTime lastLoginDate;
+    @ApiModelProperty("余额")
+    private BigDecimal balance = BigDecimal.ZERO;
 
-    private String telephone;
 
     @TableField
     private LocalDateTime createTime;
-    @TableField
-    private LocalDateTime updateTime;
+
 
 
 

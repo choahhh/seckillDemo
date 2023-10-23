@@ -44,10 +44,10 @@
     </appender>
 
 
-    <logger name="HZ_XML" additivity="false" level="DEBUG">
+    <logger name="HZ_XML" additivity="false" level="INFO">
         <appender-ref ref="ASYNC_XML"/>
     </logger>
-    <root level="DEBUG">
+    <root level="INFO">
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="DAILY_FILE"/>
         <appender-ref ref="ASYNC_XML"/>

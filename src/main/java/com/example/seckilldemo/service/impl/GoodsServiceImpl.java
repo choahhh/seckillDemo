@@ -1,86 +1,150 @@
 package com.example.seckilldemo.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.seckilldemo.dao.GoodsMapper;
 import com.example.seckilldemo.data.EmptyStockMap;
 import com.example.seckilldemo.data.RedisKey;
 import com.example.seckilldemo.entity.po.Goods;
-import com.example.seckilldemo.entity.po.GoodsDetail;
 import com.example.seckilldemo.service.GoodsService;
+import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Slf4j
+@CacheConfig(cacheNames = {"good"})
 public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements GoodsService {
 
     @Autowired
     private RedisTemplate redisTemplate;
 
-    @Override
-    public Integer selectSeckillCount(Long goodsId) {
-        LambdaQueryWrapper<Goods> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Goods::getGoodsId, goodsId);
-        Goods seckillGoods = getOne(queryWrapper);
-        return seckillGoods == null ? 0 : seckillGoods.getStockCount();
-    }
 
     @Override
     @Transactional
-    //数据库加锁 所以方法不需要加锁 保证原子
-    public boolean advanceCalSeckillCount(Long goodsId,Integer goodsCount) {
-        //写一个service 来同步redis 实时查看库存
-        Integer count = baseMapper.selectLockSeckillCount(goodsId);
-        if (count  == null || count < goodsCount) {
-            return false;
-        }
+    @CacheEvict(key = "#p0.id")
+    public void saveGoods(Goods goods) {
+        baseMapper.insert(goods);
+        String seckillCount = RedisKey.getAdvanceCount(goods.getId());
+        //先存入redis
+        redisTemplate.opsForValue().set(seckillCount,goods.getStock().intValue());
+    }
 
-        //判断有没有出现 redis比库存高可能 被手动减少库存，需要删除redis 可能会导致 下不了单
-        //先查数据库 再查 redis 减少下面判断触发次数 只有 人工减少库存 会触发 顶多导致 后续下单减少库存失败
-        Integer curCount = (Integer) redisTemplate.opsForValue().get(RedisKey.getAdvanceCount(goodsId));
-        if(curCount != null && curCount > count) {
-            log.error("可能手动减库存 导致缓存数量比数据库高 清楚redis。goosId=》{}",goodsId);
-            redisTemplate.delete(RedisKey.getAdvanceCount(goodsId));
-        }
-        //后面订单生成的时候需要加回去,redis的值一直在变化所以要获取最新值
-        Long increment = redisTemplate.opsForValue().increment(RedisKey.getAdvanceCount(goodsId), goodsCount);
-        if(count - increment < 0) {
-            //不够减 加回去
-            redisTemplate.opsForValue().decrement(RedisKey.getAdvanceCount(goodsId),goodsCount);
+    @Override
+    @Cacheable(key = "#p0", unless = "#result == null")
+    public Goods findGoodsNoCountById(Long goodsId) {
+        Goods goods = baseMapper.selectById(goodsId);
+        goods.setStock(null);
+        return goods;
+    }
+
+    @Override
+    public Boolean updateCountByRedis(Long goodsId, int i) {
+        try {
+
+            String advanceCount = RedisKey.getAdvanceCount(goodsId);
+            Long increment = redisTemplate.opsForValue().increment(advanceCount, i);
+            if (increment < 0) {
+                redisTemplate.opsForValue().increment(advanceCount, (0 - i));
+//                redisSync.syncCount(goodsId);
+                log.error("redis 数量不足!可执行同步处理!");
+                return false;
+            }
+        }catch (Exception e) {
+            syncCount(goodsId);
+            e.printStackTrace();
             return false;
         }
         return true;
     }
 
     @Override
-    public boolean subtractAdvanceCount(Long goodsId,Integer goodsCount) {
-        try {
-            //说明订单完成 预先 使用库存 减掉
-            Integer count = (Integer) redisTemplate.opsForValue().get(RedisKey.getAdvanceCount(goodsId));
-            if (count != null && count >= goodsCount) {
-                redisTemplate.opsForValue().decrement(RedisKey.getAdvanceCount(goodsId),goodsCount);
-            } else {
-//                redisTemplate.opsForValue().set(RedisKey.getAdvanceCount(goodsId),0);
-                //减失败说明redis被清空过了 出现的现象就是一直下不了单
-                log.error("预先库存减少失败! goodsId=>{},goodsCount=>{}", goodsId ,goodsCount);
-            }
-        } catch (Exception e) {
-            //报错直接清楚RedisKey.getAdvanceCount(goodsId)key ，不过会使得订单无法生成
-            log.error("预先库存减少失败! goodsId=>{}", goodsId + "", e);
-            return false;
-        }
-        return true;
+    public Integer findCountByDb(Long goodsId) {
+
+        return baseMapper.findCountByDb(goodsId);
     }
+
+    @Override
+    public Integer findCountByRedis(Long goodsId) {
+        String advanceBalance = RedisKey.getAdvanceCount(goodsId);
+        //先存入redis
+        return (Integer) redisTemplate.opsForValue().get(advanceBalance);
+    }
+
+
+
+
+
+//    @Override
+//    @Transactional
+//    //数据库加锁 所以方法不需要加锁 保证原子
+//    public AjaxResult advanceCalSeckill(GoodsDto goodsDto, Long userId, Integer goodsCount) {
+//        Integer count = baseMapper.selectLockSeckillCount(goodsDto.getId());
+//        BigDecimal balance = userService.findBalanceById(userId);
+//        if (count  == null || count < goodsCount) {
+//            return AjaxResult.error(RespBeanEnum.EMPTY_STOCK.getMessage());
+//        }
+//        if(goodsDto.getGoodsPrice().compareTo(balance) > 0 ) {
+//            return AjaxResult.error(RespBeanEnum.NO_MONEY.getMessage());
+//        }
+//
+//        //判断有没有出现 redis比库存高可能 被手动减少库存，需要删除redis 可能会导致 下不了单
+//        //先查数据库 再查 redis 减少下面判断触发次数 只有 人工减少库存 会触发 顶多导致 后续下单减少库存失败
+//        Integer curCount = (Integer) redisTemplate.opsForValue().get(RedisKey.getAdvanceCount(goodsDto.getId()));
+//        Double price = (Double) redisTemplate.opsForValue().get(RedisKey.getAdvanceBalance(userId));
+//
+//        if(curCount != null && curCount > count) {
+//            log.error("可能手动减库存 导致缓存数量比数据库高 清除redis。goosId=》{}",goodsDto.getId());
+//            redisTemplate.delete(RedisKey.getAdvanceCount(goodsDto.getId()));
+//        }
+//
+//        if(price != null && new BigDecimal(price.toString()).compareTo(balance) > 0) {
+//            log.error("可能手动降余额 导致缓存数量比数据库高 清除redis。userId=》{}",userId);
+//            redisTemplate.delete(RedisKey.getAdvanceBalance(userId));
+//        }
+//
+//
+//        //后面订单生成的时候需要加回去,redis的值一直在变化所以要获取最新值
+//        Long increment = redisTemplate.opsForValue().increment(RedisKey.getAdvanceCount(goodsDto.getId()), goodsCount);
+//
+//        BigDecimal multiply = goodsDto.getGoodsPrice().multiply(new BigDecimal(goodsCount + ""));
+//        Double incrementDouble = redisTemplate.opsForValue().increment(RedisKey.getAdvanceBalance(userId),multiply.doubleValue() );
+//
+//        AjaxResult result = AjaxResult.success();
+//
+//
+//        if(incrementDouble > balance.doubleValue()) {
+//            result = AjaxResult.error(RespBeanEnum.NO_MONEY.getMessage());
+//        }
+//        if(count - increment < 0) {
+//            result = AjaxResult.error(RespBeanEnum.EMPTY_STOCK.getMessage());
+//        }
+//        if(!result.isSuccess()) {
+//            redisTemplate.opsForValue().decrement(RedisKey.getAdvanceCount(goodsDto.getId()),goodsCount);
+//            redisTemplate.opsForValue().increment(RedisKey.getAdvanceBalance(userId),0 - multiply.doubleValue());
+//        }
+//        return result;
+//    }
+
+
+//    @Overridee
+//    public boolean advanceBalance(Goods goods, Integer count) {
+//        return false;
+//    }
+
+
 
 
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-//    @Caching(evict = {@CacheEvict(key = "'seckillCount'+#p0")})
     public void addSeckillCount(Long goodsId, Integer seckillCount) {
         try {
             baseMapper.addSeckillCount(goodsId, seckillCount);
@@ -102,36 +166,40 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean subtractSeckillCount(Long goodsId,Integer goodsCount) {
-        boolean b = subtractAdvanceCount(goodsId,goodsCount);
-        if(!b) {
-            return b;
-        }
         int i = baseMapper.subtractSeckillCount(goodsId,goodsCount);
         //减库存失败
         if (i <= 0) {
             return false;
         }
-        Integer c = selectSeckillCount(goodsId);
-        if (c <= 0) {
-            redisTemplate.opsForValue().set("isStockEmpty:" + goodsId, "0");
-        }
         return true;
     }
 
-    /**
-     * goodsId是秒杀货物的id
-     *
-     * @param goodsId
-     * @return
-     */
     @Override
-    public GoodsDetail selectGoodInfo(Long goodsId) {
-
-        return baseMapper.selectGoodInfo(goodsId);
+//    @Cacheable(key = "#p0", unless = "#result == null")
+    public Goods findById(Long goodsId) {
+        return baseMapper.selectById(goodsId);
     }
 
     @Override
-    public Goods findGoodDetail(Long goodsId, Long userId) {
-        return baseMapper.findGoodDetail(goodsId,userId);
+    @CacheEvict(key = "#p0.id")
+    public void updateByid(Goods goods) {
+         baseMapper.updateById(goods);
+    }
+
+
+    @Override
+    public void syncCount(Long goodId) {
+        List<Goods> list = Lists.newArrayList();
+        if(goodId == null) {
+            list = list();
+            for (Goods goods : list) {
+                redisTemplate.opsForValue().set(RedisKey.getAdvanceCount(goods.getId()), goods.getStock());
+            }
+        } else {
+            Integer countByDb = findCountByDb(goodId);
+            if(countByDb != null) {
+                redisTemplate.opsForValue().set(RedisKey.getAdvanceCount(goodId), countByDb);
+            }
+        }
     }
 }

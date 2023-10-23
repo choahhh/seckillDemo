@@ -59,7 +59,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                 accountId, needPay );
         LocalDateTime now = LocalDateTime.now();
         if (remainingAmount == null) {
-            return AjaxResult.error(RespBeanEnum.PAY_FAIL.getMessage());
+            return AjaxResult.error(RespBeanEnum.NO_MONEY.getMessage());
         }
         //表示操作成功，添加日志
         PayLog payLog = new PayLog();
@@ -72,10 +72,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         payLog.setDeductionAmount("-" + needPay.toString());
         payLog.insert();
         //更新支付accontId
-        order.setAccountId(accountId);
-        order.setPayDate(now);
         order.setStatus(OrderStatus.PAY.getValue());
-        order.setUpdateDate(now);
         updateOrder(order);
         return AjaxResult.success();
     }
@@ -93,7 +90,6 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         // 加库存
         OrderTypeService orderService = OrderTypeFactory.getService(order.getType());
         order.setStatus(orderState);
-        order.setUpdateDate(LocalDateTime.now());
         orderService.updateOrder(order);
         goodsService.addSeckillCount(order.getGoodsId(),order.getOrderDetail().getGoodsCount());
 
@@ -112,33 +108,33 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         return AjaxResult.success();
     }
 
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public AjaxResult returnOrder(Order order) {
-
-        Account account = accountService.getById(order.getAccountId());
-        //添加金额
-        BigDecimal needPay =  order.getOrderDetail().getGoodsPrice().multiply(new BigDecimal(order.getOrderDetail().getGoodsCount() + ""));
-
-        BigDecimal remainingAmount = accountService.addAmount(account.getId(), needPay);
-        if (remainingAmount == null) {
-            log.error("回退订单 修改金额失败！order=>{}",order);
-            return AjaxResult.error(RespBeanEnum.RETURN_ERROR.getMessage());
-        }
-        //表示操作成功，添加日志
-        PayLog payLog = new PayLog();
-        payLog.setNote("\"" + order.getId() + "\"订单回退成功！");
-        payLog.setCreateTime(LocalDateTime.now());
-        payLog.setCreateUserId(order.getUserId());
-        payLog.setAccountId(account.getId());
-        payLog.setSrcAmount(account.getBalance());
-        payLog.setRemainingAmount(remainingAmount);
-        payLog.setDeductionAmount("+" + needPay.toString());
-        payLog.insert();
-        //回退订单
-        backOrder(OrderStatus.RETURN.getValue(),order);
-        return AjaxResult.success();
-    }
+//    @Override
+//    @Transactional(rollbackFor = Exception.class)
+//    public AjaxResult returnOrder(Order order) {
+//
+//        Account account = accountService.getById(order.getAccountId());
+//        //添加金额
+//        BigDecimal needPay =  order.getOrderDetail().getGoodsPrice().multiply(new BigDecimal(order.getOrderDetail().getGoodsCount() + ""));
+//
+//        BigDecimal remainingAmount = accountService.addAmount(account.getId(), needPay);
+//        if (remainingAmount == null) {
+//            log.error("回退订单 修改金额失败！order=>{}",order);
+//            return AjaxResult.error(RespBeanEnum.RETURN_ERROR.getMessage());
+//        }
+//        //表示操作成功，添加日志
+//        PayLog payLog = new PayLog();
+//        payLog.setNote("\"" + order.getId() + "\"订单回退成功！");
+//        payLog.setCreateTime(LocalDateTime.now());
+//        payLog.setCreateUserId(order.getUserId());
+//        payLog.setAccountId(account.getId());
+//        payLog.setSrcAmount(account.getBalance());
+//        payLog.setRemainingAmount(remainingAmount);
+//        payLog.setDeductionAmount("+" + needPay.toString());
+//        payLog.insert();
+//        //回退订单
+//        backOrder(OrderStatus.RETURN.getValue(),order);
+//        return AjaxResult.success();
+//    }
 
     @Override
     @Transactional

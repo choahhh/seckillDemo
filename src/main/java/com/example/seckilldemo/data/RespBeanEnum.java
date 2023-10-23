@@ -30,6 +30,7 @@ public enum RespBeanEnum {
     ORDER_NOT_EXIT(500300,"订单不存在"),
     ACCOUNT_NOT_EXIT(500301,"支付账号不存在"),
     PAY_FAIL(500600,"支付失败"),
+    NO_MONEY(500601,"支付失败，余额不足"),
     SHIPPED_ERROR(500701,"只能修改已支付订单"),
     RECEIPT_ERROR(500702,"只能修改已发货订单"),
     RETURN_ERROR(500702,"只能修改支付成功后的订单"),

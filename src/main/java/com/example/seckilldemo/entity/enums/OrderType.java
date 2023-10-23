@@ -10,7 +10,8 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 public enum OrderType {
-    SECKILL("秒杀订单", "seckill")
+    SECKILL("秒杀订单", "seckill"),
+    COMMON("普通订单", "common")
 
     ;
 

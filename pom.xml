@@ -48,6 +48,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.springframework.session</groupId>
+            <artifactId>spring-session-core</artifactId>
+        </dependency>
+
+
+        <dependency>
             <groupId>redis.clients</groupId>
             <artifactId>jedis</artifactId>
         </dependency>
@@ -81,10 +87,10 @@
 <!--            <artifactId>spring-security-core</artifactId>-->
 <!--        </dependency>-->
 
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-security</artifactId>-->
+<!--        </dependency>-->
 
 
         <dependency>
@@ -162,7 +168,15 @@
             <artifactId>knife4j-openapi2-spring-boot-starter</artifactId>
             <version>4.1.0</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>20.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
 
     </dependencies>
 
@@ -182,9 +196,9 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>2.7.14</version>
-                <configuration>
-                    <mainClass>com.xxxx.seckilldemo.SeckilldemoApplication</mainClass>
-                </configuration>
+<!--                <configuration>-->
+<!--                    <mainClass>com.xxxx.seckilldemo.SeckilldemoApplication</mainClass>-->
+<!--                </configuration>-->
                 <executions>
                     <execution>
                         <id>repackage</id>

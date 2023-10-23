@@ -22,7 +22,7 @@ import java.time.LocalDateTime;
 @TableName("t_order")
 @ApiModel(value = "SeckillOrder对象", description = "")
 @Data
-public class Order extends Model<Order> implements Serializable {
+public class  Order extends Model<Order> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -33,11 +33,12 @@ public class Order extends Model<Order> implements Serializable {
     @ApiModelProperty("用户ID")
     private Long userId;
 
+    @ApiModelProperty("商品ID")
+    private Long goodsId;
+
     @ApiModelProperty("订单ID")
     private Long orderId;
 
-    @ApiModelProperty("商品ID")
-    private Long goodsId;
 
     @ApiModelProperty("订单类型")
     private String type;
@@ -49,8 +50,6 @@ public class Order extends Model<Order> implements Serializable {
     private OrderDetail orderDetail;
 
 
-    @ApiModelProperty("账户id")
-    private Long accountId;
 
     @ApiModelProperty("订单创建时间")
     @TableField(updateStrategy = FieldStrategy.NEVER)
@@ -58,16 +57,7 @@ public class Order extends Model<Order> implements Serializable {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createDate;
 
-    @ApiModelProperty("订单更新时间")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime updateDate;
 
-
-    @ApiModelProperty("支付时间")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime payDate;
 
 
 }

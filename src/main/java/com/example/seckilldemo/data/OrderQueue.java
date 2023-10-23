@@ -1,18 +1,34 @@
 package com.example.seckilldemo.data;
 
+import com.example.seckilldemo.data.mq.MqMessage;
 import com.example.seckilldemo.entity.vo.OrderMessage;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import java.util.concurrent.LinkedBlockingQueue;
+import javax.annotation.PostConstruct;
 
+@Component
 public class OrderQueue {
 
-    private static LinkedBlockingQueue<OrderMessage> orderQueue = new LinkedBlockingQueue<>();
+    @Autowired
+    MqMessage mqMessage;
+    private static OrderQueue _this;
 
-    public static boolean  addMessage(OrderMessage orderMessage){
-        return orderQueue.offer(orderMessage);
+    @PostConstruct
+    public void init() {
+        _this = this;
+
+    }
+    public static OrderQueue getInstance() {
+        return _this;
+    }
+    public boolean  addMessage(OrderMessage orderMessage){
+        return mqMessage.addMessage(orderMessage);
     }
 
-    public static OrderMessage  getMessage() throws InterruptedException {
-        return orderQueue.take();
+    public  OrderMessage  getMessage() throws InterruptedException {
+        return mqMessage.getMessage();
     }
+
+
 }

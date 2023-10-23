@@ -5,4 +5,18 @@
     <select id="findByName" resultType="com.example.seckilldemo.entity.po.User">
         select * from t_user where userName = #{userNmae} limit 1
     </select>
+    <select id="findBalanceById" resultType="java.math.BigDecimal">
+        select balance from t_user  where id = #{userId} for update
+
+    </select>
+
+    <update id="updateBalanceByDb">
+        update t_user  set balance = balance - ${balance} where id = #{userId} and balance >= ${balance}
+
+    </update>
+
+    <update id="addBalanceByDb">
+        update t_user  set balance = balance + ${balance} where id = #{userId}
+
+    </update>
 </mapper>
