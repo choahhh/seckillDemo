@@ -3,6 +3,7 @@ package com.example.seckilldemo.controller;
 
 import com.example.seckilldemo.aop.annotation.Limit;
 import com.example.seckilldemo.data.RespBeanEnum;
+import com.example.seckilldemo.entity.dto.CreateOrderDto;
 import com.example.seckilldemo.entity.dto.GoodsDto;
 import com.example.seckilldemo.entity.enums.OrderType;
 import com.example.seckilldemo.entity.po.Goods;
@@ -15,6 +16,7 @@ import com.example.seckilldemo.util.AjaxResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -54,8 +56,10 @@ public class OrderController {
 
     @RequestMapping("/buy")
     @ResponseBody
-    @Limit(key = "placeOrder",timeOut = 2,timeUnit = TimeUnit.SECONDS,permitsPerSecond = 300)
-    public AjaxResult placeOrder(Long goodsId, Long userId) {
+    @Limit(key = "placeOrder", timeOut = 2, timeUnit = TimeUnit.SECONDS, permitsPerSecond = 300)
+    public AjaxResult placeOrder(@RequestBody CreateOrderDto orderDto) {
+        Long goodsId = orderDto.getGoodsId();
+        Long userId = orderDto.getUserId();
         User userById = userService.findUserNoBanlanceById(userId);
         if (userById == null) {
             return AjaxResult.error(RespBeanEnum.SESSION_NOT_EXIT.getMessage());
@@ -66,7 +70,7 @@ public class OrderController {
         if (goods == null) {
             return AjaxResult.error(RespBeanEnum.GOOD_NOT_EXISTS.getMessage());
         }
-        GoodsDto goodsDto = new GoodsDto(goods.getId(),goods.getPrice(),goods.getName());
+        GoodsDto goodsDto = new GoodsDto(goods.getId(), goods.getPrice(), goods.getName());
         String type = OrderType.COMMON.getValue();
         SeckillRule rule = seckillRuleService.getRule();
         if (goods.getIskill() == 0 && rule != null && rule.getStatus() == 0) {
@@ -81,8 +85,6 @@ public class OrderController {
         }
         return seckillService.seckillOrder(orderTypeService, goodsDto, 1, userId);
     }
-
-
 
 
 }

@@ -19,7 +19,7 @@ public class SeckillRuleServiceImpl extends ServiceImpl<SeckillRuleMapper, Secki
     @Override
     public void setRule(SeckillRule seckillRule) {
         baseMapper.deleteById(1);
-        seckillRule.setId(1l);
+        seckillRule.setId(1L);
         seckillRule.insert();
         String jsonString = JSON.toJSONString(seckillRule);
         redisTemplate.opsForValue().set(RedisKey.getSeckillRule(),jsonString);

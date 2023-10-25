@@ -10,6 +10,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,7 +29,7 @@ public class GoodsController {
 
     @RequestMapping("add")
     @ApiOperation("保存商品信息")
-    public AjaxResult saveGoods(Goods goods) {
+    public AjaxResult saveGoods(@RequestBody Goods goods) {
 
         goods.setId(null);
 
@@ -41,7 +42,7 @@ public class GoodsController {
 
     @RequestMapping("update")
     @ApiOperation("编辑商品")
-    public AjaxResult update(Goods goods) {
+    public AjaxResult update(@RequestBody Goods goods) {
         if(goods.getId() == null) {
             return AjaxResult.error("请填写id，无法找到商品");
         }

@@ -77,7 +77,7 @@ public class UserController {
     @ApiOperation("注册新用户")
     @PostMapping("/add")
     @ResponseBody
-    public AjaxResult<Object> register(User userVO) throws Exception {
+    public AjaxResult<Object> register(@RequestBody User userVO) throws Exception {
         userService.saveUser(userVO);
 
         return AjaxResult.success();
